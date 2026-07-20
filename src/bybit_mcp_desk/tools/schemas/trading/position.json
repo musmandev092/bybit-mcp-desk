@@ -1,0 +1,372 @@
+[
+  {
+    "name": "set_leverage",
+    "description": "Set leverage for a trading position. Higher leverage amplifies both profits and losses. Use with caution as it increases risk significantly.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category to set leverage for",
+          "enum": [
+            "linear",
+            "inverse",
+            "option"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol to set leverage for",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "buyLeverage": {
+          "type": "string",
+          "description": "Leverage for long positions. Range depends on symbol (e.g., 1-100x)",
+          "examples": [
+            "1",
+            "5",
+            "10",
+            "25",
+            "50",
+            "100"
+          ]
+        },
+        "sellLeverage": {
+          "type": "string",
+          "description": "Leverage for short positions. Range depends on symbol (e.g., 1-100x)",
+          "examples": [
+            "1",
+            "5",
+            "10",
+            "25",
+            "50",
+            "100"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "symbol",
+        "buyLeverage",
+        "sellLeverage"
+      ]
+    }
+  },
+  {
+    "name": "switch_cross_isolated_margin",
+    "description": "Switch between cross margin (uses entire account balance as collateral) and isolated margin (uses only position margin). Cross margin has lower liquidation risk but affects entire account.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category to change margin mode for",
+          "enum": [
+            "linear",
+            "inverse"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol to change margin mode for",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "tradeMode": {
+          "type": "integer",
+          "description": "Margin mode: 0 = cross margin (shared account balance), 1 = isolated margin (separate position margin)",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "buyLeverage": {
+          "type": "string",
+          "description": "Leverage for long positions after mode switch",
+          "examples": [
+            "1",
+            "5",
+            "10",
+            "25",
+            "50"
+          ]
+        },
+        "sellLeverage": {
+          "type": "string",
+          "description": "Leverage for short positions after mode switch",
+          "examples": [
+            "1",
+            "5",
+            "10",
+            "25",
+            "50"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "symbol",
+        "tradeMode",
+        "buyLeverage",
+        "sellLeverage"
+      ]
+    }
+  },
+  {
+    "name": "switch_position_mode",
+    "description": "Switch between one-way mode (net position) and hedge mode (separate long/short positions). Hedge mode allows simultaneous long and short positions on the same symbol.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category to change position mode for",
+          "enum": [
+            "linear",
+            "inverse",
+            "option"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol (optional for some categories, required for linear/inverse)",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "coin": {
+          "type": "string",
+          "description": "Base coin for options category",
+          "examples": [
+            "BTC",
+            "ETH",
+            "SOL"
+          ]
+        },
+        "mode": {
+          "type": "integer",
+          "description": "Position mode: 0 = One-Way Mode (net position), 3 = Hedge Mode (separate buy/sell positions)",
+          "enum": [
+            0,
+            3
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "mode"
+      ]
+    }
+  },
+  {
+    "name": "set_trading_stop",
+    "description": "Set take profit and stop loss orders for an existing position. These orders automatically close your position at specified profit or loss levels to manage risk.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category for the position",
+          "enum": [
+            "linear",
+            "inverse",
+            "option"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol for the position",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "positionIdx": {
+          "type": "integer",
+          "description": "Position index: 0 = one-way mode, 1 = hedge-mode Buy side, 2 = hedge-mode Sell side"
+        },
+        "takeProfit": {
+          "type": "string",
+          "description": "Take profit price to automatically close position at profit target",
+          "examples": [
+            "52000",
+            "3200",
+            "150"
+          ]
+        },
+        "stopLoss": {
+          "type": "string",
+          "description": "Stop loss price to automatically close position to limit losses",
+          "examples": [
+            "48000",
+            "2800",
+            "90"
+          ]
+        },
+        "tpTriggerBy": {
+          "type": "string",
+          "description": "Take profit trigger price type",
+          "enum": [
+            "LastPrice",
+            "IndexPrice",
+            "MarkPrice"
+          ]
+        },
+        "slTriggerBy": {
+          "type": "string",
+          "description": "Stop loss trigger price type",
+          "enum": [
+            "LastPrice",
+            "IndexPrice",
+            "MarkPrice"
+          ]
+        },
+        "tpslMode": {
+          "type": "string",
+          "description": "TP/SL mode for partial position closure",
+          "enum": [
+            "Full",
+            "Partial"
+          ]
+        },
+        "tpOrderType": {
+          "type": "string",
+          "description": "Take profit order type when triggered",
+          "enum": [
+            "Market",
+            "Limit"
+          ]
+        },
+        "slOrderType": {
+          "type": "string",
+          "description": "Stop loss order type when triggered",
+          "enum": [
+            "Market",
+            "Limit"
+          ]
+        },
+        "tpSize": {
+          "type": "string",
+          "description": "Take profit size for partial closure",
+          "examples": [
+            "0.5",
+            "50",
+            "100"
+          ]
+        },
+        "slSize": {
+          "type": "string",
+          "description": "Stop loss size for partial closure",
+          "examples": [
+            "0.5",
+            "50",
+            "100"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "symbol",
+        "positionIdx"
+      ]
+    }
+  },
+  {
+    "name": "set_auto_add_margin",
+    "description": "Enable or disable automatic margin addition for isolated margin positions. When enabled, margin is automatically added to prevent liquidation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category for the position",
+          "enum": [
+            "linear",
+            "inverse"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol for the position",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "autoAddMargin": {
+          "type": "integer",
+          "description": "Auto add margin setting: 0 = disabled, 1 = enabled",
+          "enum": [
+            0,
+            1
+          ]
+        },
+        "positionIdx": {
+          "type": "integer",
+          "description": "Position index: 0 = one-way mode, 1 = hedge-mode Buy side, 2 = hedge-mode Sell side"
+        }
+      },
+      "required": [
+        "category",
+        "symbol",
+        "autoAddMargin"
+      ]
+    }
+  },
+  {
+    "name": "modify_position_margin",
+    "description": "Manually add or reduce margin for an isolated margin position. Use positive values to add margin (reduce liquidation risk) or negative values to reduce margin.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category for the position",
+          "enum": [
+            "linear",
+            "inverse"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol for the position",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "margin": {
+          "type": "string",
+          "description": "Margin amount to add (positive) or reduce (negative). In quote currency for linear, base currency for inverse",
+          "examples": [
+            "100",
+            "-50",
+            "25.5",
+            "-10.25"
+          ]
+        },
+        "positionIdx": {
+          "type": "integer",
+          "description": "Position index: 0 = one-way mode, 1 = hedge-mode Buy side, 2 = hedge-mode Sell side"
+        }
+      },
+      "required": [
+        "category",
+        "symbol",
+        "margin"
+      ]
+    }
+  }
+]

@@ -1,0 +1,623 @@
+[
+  {
+    "name": "get_server_time",
+    "description": "Get the current Bybit server time",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "get_tickers",
+    "description": "Get real-time ticker information including current prices, 24h volume, and price changes for trading symbols. Use this to get current market data for any cryptocurrency pair.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product type: 'linear' for USDT perpetuals (most common), 'inverse' for coin-margined futures, 'option' for options, 'spot' for spot trading",
+          "enum": [
+            "linear",
+            "inverse",
+            "option",
+            "spot"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol. Examples: 'BTCUSDT' (Bitcoin), 'ETHUSDT' (Ethereum), 'SOLUSDT' (Solana). Leave empty to get all symbols.",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT",
+            "ADAUSDT"
+          ]
+        },
+        "baseCoin": {
+          "type": "string",
+          "description": "Base coin for options only. Examples: 'BTC', 'ETH'",
+          "examples": [
+            "BTC",
+            "ETH"
+          ]
+        },
+        "expDate": {
+          "type": "string",
+          "description": "Expiry date for options only. Format: DDMMMYY (e.g., '25DEC21', '30JUN22')",
+          "pattern": "^[0-9]{2}[A-Z]{3}[0-9]{2}$",
+          "examples": [
+            "25DEC21",
+            "30JUN22",
+            "31MAR23"
+          ]
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "get_order_book",
+    "description": "Get order book depth for a trading symbol",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product type",
+          "enum": [
+            "linear",
+            "inverse",
+            "option",
+            "spot"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Symbol name (e.g., BTCUSDT)"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Limit for data size per page (1-500)",
+          "minimum": 1,
+          "maximum": 500,
+          "default": 25
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "get_recent_trades",
+    "description": "Get recent trades for a symbol",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product type",
+          "enum": [
+            "linear",
+            "inverse",
+            "option",
+            "spot"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Symbol name (e.g., BTCUSDT)"
+        },
+        "baseCoin": {
+          "type": "string",
+          "description": "Base coin (for option only)"
+        },
+        "optionType": {
+          "type": "string",
+          "description": "Option type (Call or Put, for option only)",
+          "enum": [
+            "Call",
+            "Put"
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Limit for data size per page (1-1000)",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 500
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "get_kline",
+    "description": "Get historical candlestick/OHLC data for technical analysis. Returns open, high, low, close prices and volume data. If no time range specified, returns recent data ending at current time.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product type: 'linear' for USDT perpetuals (most common), 'inverse' for coin-margined futures, 'option' for options, 'spot' for spot trading",
+          "enum": [
+            "linear",
+            "inverse",
+            "option",
+            "spot"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol. Examples: 'BTCUSDT', 'ETHUSDT', 'SOLUSDT'",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "interval": {
+          "type": "string",
+          "description": "Time interval for each candlestick. Minutes: '1', '3', '5', '15', '30', '60' (1h), '120' (2h), '240' (4h), '360' (6h), '720' (12h). Periods: 'D' (daily), 'W' (weekly), 'M' (monthly)",
+          "enum": [
+            "1",
+            "3",
+            "5",
+            "15",
+            "30",
+            "60",
+            "120",
+            "240",
+            "360",
+            "720",
+            "D",
+            "M",
+            "W"
+          ],
+          "default": "D"
+        },
+        "start": {
+          "type": "integer",
+          "description": "Start time in milliseconds timestamp (OPTIONAL). If not provided, returns recent data. This is the OLDEST time point you want (furthest back in time). Example: 1640995200000 for Jan 1, 2022"
+        },
+        "end": {
+          "type": "integer",
+          "description": "End time in milliseconds timestamp (OPTIONAL). If not provided, defaults to current time. This is the NEWEST time point you want (most recent). Must be after start time."
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of candlesticks to return (OPTIONAL). Range: 1-1000. If not specified, API will use a reasonable default based on the interval.",
+          "minimum": 1,
+          "maximum": 1000
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "get_mark_price_kline",
+    "description": "Get mark price candlestick data for derivatives trading. Mark price is used for liquidation calculations and PnL. Available for linear and inverse perpetual contracts only.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product type: 'linear' for USDT perpetuals, 'inverse' for coin-margined futures",
+          "enum": [
+            "linear",
+            "inverse"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol. Examples: 'BTCUSDT', 'ETHUSDT'",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "interval": {
+          "type": "string",
+          "description": "Time interval for each candlestick. Minutes: '1', '3', '5', '15', '30', '60' (1h), '120' (2h), '240' (4h), '360' (6h), '720' (12h). Periods: 'D' (daily), 'W' (weekly), 'M' (monthly)",
+          "enum": [
+            "1",
+            "3",
+            "5",
+            "15",
+            "30",
+            "60",
+            "120",
+            "240",
+            "360",
+            "720",
+            "D",
+            "M",
+            "W"
+          ],
+          "default": "D"
+        },
+        "start": {
+          "type": "integer",
+          "description": "Start time in milliseconds timestamp (OPTIONAL). The OLDEST time point (furthest back). If not provided, returns recent data."
+        },
+        "end": {
+          "type": "integer",
+          "description": "End time in milliseconds timestamp (OPTIONAL). The NEWEST time point (most recent). If not provided, defaults to current time."
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of candlesticks to return (OPTIONAL). Range: 1-1000.",
+          "minimum": 1,
+          "maximum": 1000
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "get_index_price_kline",
+    "description": "Get index price candlestick data for derivatives. Index price is the fair value price based on major spot exchanges, used as reference for mark price calculation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product type: 'linear' for USDT perpetuals, 'inverse' for coin-margined futures",
+          "enum": [
+            "linear",
+            "inverse"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol. Examples: 'BTCUSDT', 'ETHUSDT'",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "interval": {
+          "type": "string",
+          "description": "Time interval for each candlestick. Minutes: '1', '3', '5', '15', '30', '60' (1h), '120' (2h), '240' (4h), '360' (6h), '720' (12h). Periods: 'D' (daily), 'W' (weekly), 'M' (monthly)",
+          "enum": [
+            "1",
+            "3",
+            "5",
+            "15",
+            "30",
+            "60",
+            "120",
+            "240",
+            "360",
+            "720",
+            "D",
+            "M",
+            "W"
+          ],
+          "default": "D"
+        },
+        "start": {
+          "type": "integer",
+          "description": "Start time in milliseconds timestamp (OPTIONAL). The OLDEST time point (furthest back). If not provided, returns recent data."
+        },
+        "end": {
+          "type": "integer",
+          "description": "End time in milliseconds timestamp (OPTIONAL). The NEWEST time point (most recent). If not provided, defaults to current time."
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of candlesticks to return (OPTIONAL). Range: 1-1000.",
+          "minimum": 1,
+          "maximum": 1000
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "get_premium_index_price_kline",
+    "description": "Get premium index price candlestick data for linear perpetuals. Premium index shows the funding rate basis and is used to calculate funding payments.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product type: only 'linear' (USDT perpetuals) supported",
+          "enum": [
+            "linear"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol. Examples: 'BTCUSDT', 'ETHUSDT'",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "interval": {
+          "type": "string",
+          "description": "Time interval for each candlestick. Minutes: '1', '3', '5', '15', '30', '60' (1h), '120' (2h), '240' (4h), '360' (6h), '720' (12h). Periods: 'D' (daily), 'W' (weekly), 'M' (monthly)",
+          "enum": [
+            "1",
+            "3",
+            "5",
+            "15",
+            "30",
+            "60",
+            "120",
+            "240",
+            "360",
+            "720",
+            "D",
+            "M",
+            "W"
+          ],
+          "default": "D"
+        },
+        "start": {
+          "type": "integer",
+          "description": "Start time in milliseconds timestamp (OPTIONAL). The OLDEST time point (furthest back). If not provided, returns recent data."
+        },
+        "end": {
+          "type": "integer",
+          "description": "End time in milliseconds timestamp (OPTIONAL). The NEWEST time point (most recent). If not provided, defaults to current time."
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of candlesticks to return (OPTIONAL). Range: 1-1000.",
+          "minimum": 1,
+          "maximum": 1000
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "get_instruments_info",
+    "description": "Get trading instruments information",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product type",
+          "enum": [
+            "linear",
+            "inverse",
+            "option",
+            "spot"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Symbol name (e.g., BTCUSDT)"
+        },
+        "baseCoin": {
+          "type": "string",
+          "description": "Base coin"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Limit for data size per page (1-1000)",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 500
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Cursor for pagination"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "get_funding_rate_history",
+    "description": "Get funding rate history",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product type",
+          "enum": [
+            "linear",
+            "inverse"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Symbol name (e.g., BTCUSDT)"
+        },
+        "startTime": {
+          "type": "integer",
+          "description": "Start timestamp (ms)"
+        },
+        "endTime": {
+          "type": "integer",
+          "description": "End timestamp (ms)"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Limit for data size per page (1-200)",
+          "minimum": 1,
+          "maximum": 200,
+          "default": 200
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "get_open_interest",
+    "description": "Get open interest data",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product type",
+          "enum": [
+            "linear",
+            "inverse"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Symbol name (e.g., BTCUSDT)"
+        },
+        "interval": {
+          "type": "string",
+          "description": "Interval time",
+          "enum": [
+            "5min",
+            "15min",
+            "30min",
+            "1h",
+            "4h",
+            "1d"
+          ],
+          "default": "5min"
+        },
+        "startTime": {
+          "type": "integer",
+          "description": "Start timestamp (ms)"
+        },
+        "endTime": {
+          "type": "integer",
+          "description": "End timestamp (ms)"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Limit for data size per page (1-200)",
+          "minimum": 1,
+          "maximum": 200,
+          "default": 50
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Cursor for pagination"
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "get_insurance",
+    "description": "Get insurance fund data",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "coin": {
+          "type": "string",
+          "description": "Coin name (e.g., BTC, ETH, USDT)"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "get_risk_limit",
+    "description": "Get risk limit information",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product type",
+          "enum": [
+            "linear",
+            "inverse"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Symbol name (e.g., BTCUSDT)"
+        }
+      }
+    }
+  },
+  {
+    "name": "get_long_short_ratio",
+    "description": "Get long/short ratio data",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product type",
+          "enum": [
+            "linear",
+            "inverse"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Symbol name (e.g., BTCUSDT)"
+        },
+        "interval": {
+          "type": "string",
+          "description": "Data recording interval",
+          "enum": [
+            "5min",
+            "15min",
+            "30min",
+            "1h",
+            "4h",
+            "1d"
+          ],
+          "default": "5min"
+        },
+        "startTime": {
+          "type": "integer",
+          "description": "Start timestamp (ms)"
+        },
+        "endTime": {
+          "type": "integer",
+          "description": "End timestamp (ms)"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Limit for data size per page (1-500)",
+          "minimum": 1,
+          "maximum": 500,
+          "default": 50
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  }
+]

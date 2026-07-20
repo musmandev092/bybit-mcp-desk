@@ -1,0 +1,542 @@
+[
+  {
+    "name": "get_open_closed_orders",
+    "description": "Get both open (pending) and recently closed orders. Essential for monitoring order status and trading activity. Use this to check if orders are filled, cancelled, or still pending.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category to query orders for",
+          "enum": [
+            "linear",
+            "spot",
+            "option",
+            "inverse"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Specific trading pair to get orders for. Leave empty to get all orders in category",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "baseCoin": {
+          "type": "string",
+          "description": "Base coin filter for derivatives and options",
+          "examples": [
+            "BTC",
+            "ETH",
+            "SOL"
+          ]
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Specific order ID to query",
+          "examples": [
+            "1234567890123456"
+          ]
+        },
+        "orderLinkId": {
+          "type": "string",
+          "description": "Specific custom order ID to query",
+          "examples": [
+            "myorder123",
+            "trade_2024_001"
+          ]
+        },
+        "openOnly": {
+          "type": "integer",
+          "description": "Filter by open orders only: 0 = all orders, 1 = open orders only, 2 = closed orders only"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of records to return (1-50)",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 20
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Pagination cursor for next page of results"
+        }
+      },
+      "required": [
+        "category"
+      ]
+    }
+  },
+  {
+    "name": "get_order_history",
+    "description": "Get comprehensive order history with detailed information about past orders including execution details, timestamps, and status changes. Useful for trade analysis and record keeping.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category to query order history for",
+          "enum": [
+            "linear",
+            "spot",
+            "option",
+            "inverse"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Specific trading pair to get order history for. Leave empty to get all orders in category",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "baseCoin": {
+          "type": "string",
+          "description": "Base coin filter for derivatives and options",
+          "examples": [
+            "BTC",
+            "ETH",
+            "SOL"
+          ]
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Specific order ID to query",
+          "examples": [
+            "1234567890123456"
+          ]
+        },
+        "orderLinkId": {
+          "type": "string",
+          "description": "Specific custom order ID to query",
+          "examples": [
+            "myorder123",
+            "trade_2024_001"
+          ]
+        },
+        "orderStatus": {
+          "type": "string",
+          "description": "Filter by order status",
+          "enum": [
+            "New",
+            "PartiallyFilled",
+            "Filled",
+            "Cancelled",
+            "Rejected",
+            "PartiallyFilledCanceled",
+            "Deactivated"
+          ]
+        },
+        "orderFilter": {
+          "type": "string",
+          "description": "Order type filter",
+          "enum": [
+            "Order",
+            "StopOrder",
+            "tpslOrder",
+            "OcoOrder",
+            "BidirectionalTpslOrder"
+          ]
+        },
+        "startTime": {
+          "type": "integer",
+          "description": "Start timestamp in milliseconds for history query",
+          "examples": [
+            1640995200000,
+            1672531200000
+          ]
+        },
+        "endTime": {
+          "type": "integer",
+          "description": "End timestamp in milliseconds for history query",
+          "examples": [
+            1640995200000,
+            1672531200000
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of records to return (1-50)",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 20
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Pagination cursor for next page of results"
+        }
+      },
+      "required": [
+        "category"
+      ]
+    }
+  },
+  {
+    "name": "get_trade_history",
+    "description": "Get detailed execution history showing actual trades (fills) with execution prices, quantities, fees, and timestamps. Essential for performance analysis and tax reporting.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category to query trade executions for",
+          "enum": [
+            "linear",
+            "spot",
+            "option",
+            "inverse"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Specific trading pair to get trade history for. Leave empty to get all trades in category",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "baseCoin": {
+          "type": "string",
+          "description": "Base coin filter for derivatives and options",
+          "examples": [
+            "BTC",
+            "ETH",
+            "SOL"
+          ]
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Get trades for specific order ID",
+          "examples": [
+            "1234567890123456"
+          ]
+        },
+        "orderLinkId": {
+          "type": "string",
+          "description": "Get trades for specific custom order ID",
+          "examples": [
+            "myorder123",
+            "trade_2024_001"
+          ]
+        },
+        "execType": {
+          "type": "string",
+          "description": "Execution type filter",
+          "enum": [
+            "Trade",
+            "AdlTrade",
+            "Funding",
+            "BustTrade",
+            "Settle"
+          ]
+        },
+        "startTime": {
+          "type": "integer",
+          "description": "Start timestamp in milliseconds for trade history query",
+          "examples": [
+            1640995200000,
+            1672531200000
+          ]
+        },
+        "endTime": {
+          "type": "integer",
+          "description": "End timestamp in milliseconds for trade history query",
+          "examples": [
+            1640995200000,
+            1672531200000
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of records to return (1-100)",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 50
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Pagination cursor for next page of results"
+        }
+      },
+      "required": [
+        "category"
+      ]
+    }
+  },
+  {
+    "name": "get_wallet_balance",
+    "description": "Get detailed wallet balance information including available balance, locked balance, and total equity across different account types. Essential for portfolio monitoring and risk management.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "accountType": {
+          "type": "string",
+          "description": "Account type to query balance for. UNIFIED is most common for modern trading",
+          "enum": [
+            "UNIFIED",
+            "CONTRACT",
+            "SPOT",
+            "INVESTMENT",
+            "OPTION",
+            "FUND",
+            "COPYTRADING"
+          ],
+          "examples": [
+            "UNIFIED",
+            "SPOT",
+            "CONTRACT"
+          ]
+        },
+        "coin": {
+          "type": "string",
+          "description": "Specific coin to get balance for. Leave empty to get all coin balances",
+          "examples": [
+            "BTC",
+            "ETH",
+            "USDT",
+            "SOL",
+            "ADA"
+          ]
+        }
+      },
+      "required": [
+        "accountType"
+      ]
+    }
+  },
+  {
+    "name": "get_single_coin_balance",
+    "description": "Get balance information for a specific coin with additional details like transferable amounts and account relationships. More detailed than wallet balance for single coin queries.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "accountType": {
+          "type": "string",
+          "description": "Account type to query coin balance for",
+          "enum": [
+            "UNIFIED",
+            "CONTRACT",
+            "SPOT"
+          ],
+          "examples": [
+            "UNIFIED",
+            "SPOT",
+            "CONTRACT"
+          ]
+        },
+        "coin": {
+          "type": "string",
+          "description": "Specific coin to get detailed balance for",
+          "examples": [
+            "BTC",
+            "ETH",
+            "USDT",
+            "SOL",
+            "ADA"
+          ]
+        },
+        "memberId": {
+          "type": "string",
+          "description": "Member ID for institutional accounts (optional)"
+        },
+        "toAccountType": {
+          "type": "string",
+          "description": "Target account type for transfer queries (optional)",
+          "enum": [
+            "UNIFIED",
+            "CONTRACT",
+            "SPOT"
+          ]
+        },
+        "toMemberId": {
+          "type": "string",
+          "description": "Target member ID for institutional transfers (optional)"
+        },
+        "withBonus": {
+          "type": "integer",
+          "description": "Include bonus balance in results: 0 = exclude bonus, 1 = include bonus",
+          "enum": [
+            0,
+            1
+          ],
+          "default": 0
+        }
+      },
+      "required": [
+        "accountType",
+        "coin"
+      ]
+    }
+  },
+  {
+    "name": "get_account_info",
+    "description": "Get comprehensive account information including margin ratios, account status, upgrade status, and overall account health metrics. Essential for risk monitoring.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "get_spot_borrow_quota",
+    "description": "Get the max borrow/trade quota for spot margin trading on a symbol (read-only).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category. Must be 'spot' for borrow quota queries",
+          "enum": [
+            "spot"
+          ],
+          "default": "spot"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol. Examples: 'BTCUSDT', 'ETHUSDT'",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "side": {
+          "type": "string",
+          "description": "Order side to check quota for: 'Buy' or 'Sell'",
+          "enum": [
+            "Buy",
+            "Sell"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "symbol",
+        "side"
+      ]
+    }
+  },
+  {
+    "name": "get_position_info",
+    "description": "Get detailed position information including size, value, PnL, and margin for your trading positions. Essential for portfolio monitoring and risk management.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category to query positions for",
+          "enum": [
+            "linear",
+            "spot",
+            "option",
+            "inverse"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Specific trading pair to get position for. Leave empty to get all positions in category",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "baseCoin": {
+          "type": "string",
+          "description": "Base coin filter for derivatives and options",
+          "examples": [
+            "BTC",
+            "ETH",
+            "SOL"
+          ]
+        },
+        "settleCoin": {
+          "type": "string",
+          "description": "Settlement coin filter",
+          "examples": [
+            "USDT",
+            "BTC",
+            "ETH"
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of records to return (1-200)",
+          "minimum": 1,
+          "maximum": 200,
+          "default": 20
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Pagination cursor for next page of results"
+        }
+      },
+      "required": [
+        "category"
+      ]
+    }
+  },
+  {
+    "name": "get_closed_pnl",
+    "description": "Get historical profit and loss data for closed positions. Useful for performance analysis and tax reporting.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category to query closed PnL for",
+          "enum": [
+            "linear",
+            "spot",
+            "option",
+            "inverse"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Specific trading pair to get PnL for. Leave empty to get all closed PnL in category",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "startTime": {
+          "type": "integer",
+          "description": "Start timestamp in milliseconds for PnL query",
+          "examples": [
+            1640995200000,
+            1672531200000
+          ]
+        },
+        "endTime": {
+          "type": "integer",
+          "description": "End timestamp in milliseconds for PnL query",
+          "examples": [
+            1640995200000,
+            1672531200000
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Maximum number of records to return (1-100)",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        },
+        "cursor": {
+          "type": "string",
+          "description": "Pagination cursor for next page of results"
+        }
+      },
+      "required": [
+        "category"
+      ]
+    }
+  }
+]

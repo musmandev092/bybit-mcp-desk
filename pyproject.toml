@@ -1,0 +1,41 @@
+[project]
+name = "bybit-mcp-desk"
+version = "0.1.0"
+description = "ByBit MCP Desk - Model Context Protocol server for the Bybit trading API"
+authors = [{ name = "M Usman", email = "mosman092@hotmail.com" }]
+requires-python = ">=3.13"
+readme = "README.md"
+dependencies = [
+    "pybit>=5.17.0",
+    "pydantic>=2.13.0",
+    "python-dotenv>=1.2.0",
+    "mcp>=1.28.0",
+]
+
+[project.scripts]
+bybit-mcp-desk = "bybit_mcp_desk.main:cli_main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bybit_mcp_desk"]
+
+[dependency-groups]
+dev = ["pytest>=8.4.0", "ruff>=0.11.13"]
+
+[tool.ruff]
+line-length = 180
+exclude = [".venv", "build", "dist"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = []
+# Enable autofix for all enabled rules
+fixable = ["E", "F", "W", "I"]

@@ -1,0 +1,627 @@
+[
+  {
+    "name": "place_order",
+    "description": "Place a new trading order on Bybit. \u26a0\ufe0f EXECUTES REAL TRADES WITH REAL MONEY when trading is enabled. This is the primary tool for buying and selling cryptocurrencies. Always confirm symbol, side, quantity, and price before executing. Market orders execute immediately at current price, Limit orders wait for your specified price.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category: 'linear' for USDT perpetuals (most common), 'spot' for spot trading, 'option' for options, 'inverse' for coin-margined futures",
+          "enum": [
+            "linear",
+            "spot",
+            "option",
+            "inverse"
+          ],
+          "default": "linear"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol. Examples: 'BTCUSDT', 'ETHUSDT', 'SOLUSDT'",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT",
+            "ADAUSDT"
+          ]
+        },
+        "side": {
+          "type": "string",
+          "description": "Order side: 'Buy' to purchase, 'Sell' to sell",
+          "enum": [
+            "Buy",
+            "Sell"
+          ]
+        },
+        "orderType": {
+          "type": "string",
+          "description": "Order type: 'Market' executes immediately at current price, 'Limit' waits for specific price",
+          "enum": [
+            "Market",
+            "Limit"
+          ]
+        },
+        "qty": {
+          "type": "string",
+          "description": "Order quantity. For spot: coin amount (e.g., '0.001' BTC). For derivatives: contract size (e.g., '100' USDT)",
+          "examples": [
+            "0.001",
+            "100",
+            "1.5",
+            "0.1"
+          ]
+        },
+        "price": {
+          "type": "string",
+          "description": "Order price. Required for Limit orders, ignored for Market orders. Examples: '50000', '3000.5'",
+          "examples": [
+            "50000",
+            "3000.5",
+            "0.001",
+            "100.25"
+          ]
+        },
+        "isLeverage": {
+          "type": "integer",
+          "description": "Use leverage for spot margin trading: 0 = normal spot, 1 = use leverage (spot margin only)"
+        },
+        "orderLinkId": {
+          "type": "string",
+          "description": "Custom order ID for tracking. Must be unique. Use for order management and identification",
+          "examples": [
+            "myorder123",
+            "trade_2024_001",
+            "bot_order_456"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "symbol",
+        "side",
+        "orderType",
+        "qty"
+      ]
+    }
+  },
+  {
+    "name": "amend_order",
+    "description": "Modify an existing pending order's price or quantity. \u26a0\ufe0f Only works on orders that haven't been filled yet. Use this to adjust your order without canceling and re-placing it, which saves on fees and maintains your position in the order queue. You must provide either orderId or orderLinkId to identify the order.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category where the order exists",
+          "enum": [
+            "linear",
+            "spot",
+            "option",
+            "inverse"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol of the order to amend. Examples: 'BTCUSDT', 'ETHUSDT'",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Bybit's order ID. Either orderId or orderLinkId must be provided. Get this from order placement response or order history",
+          "examples": [
+            "1234567890123456",
+            "9876543210987654"
+          ]
+        },
+        "orderLinkId": {
+          "type": "string",
+          "description": "Your custom order ID. Either orderId or orderLinkId must be provided. This is what you set when placing the order",
+          "examples": [
+            "myorder123",
+            "trade_2024_001",
+            "bot_order_456"
+          ]
+        },
+        "qty": {
+          "type": "string",
+          "description": "New order quantity. Leave empty if only changing price. Examples: '0.002', '150'",
+          "examples": [
+            "0.002",
+            "150",
+            "1.5",
+            "0.5"
+          ]
+        },
+        "price": {
+          "type": "string",
+          "description": "New order price. Leave empty if only changing quantity. Examples: '51000', '3100.5'",
+          "examples": [
+            "51000",
+            "3100.5",
+            "0.002",
+            "105.75"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "cancel_order",
+    "description": "Cancel a single pending order immediately. \u26a0\ufe0f Only works on orders that haven't been filled yet. Once an order is filled/executed, it cannot be cancelled. Use this to remove unwanted pending orders from the order book. You must provide either orderId or orderLinkId to identify the specific order to cancel.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category where the order exists",
+          "enum": [
+            "linear",
+            "spot",
+            "option",
+            "inverse"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol of the order to cancel. Examples: 'BTCUSDT', 'ETHUSDT'",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT",
+            "ADAUSDT"
+          ]
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Bybit's order ID. Either orderId or orderLinkId must be provided. Get this from order placement response or order history",
+          "examples": [
+            "1234567890123456",
+            "9876543210987654"
+          ]
+        },
+        "orderLinkId": {
+          "type": "string",
+          "description": "Your custom order ID. Either orderId or orderLinkId must be provided. This is what you set when placing the order",
+          "examples": [
+            "myorder123",
+            "trade_2024_001",
+            "bot_order_456"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "cancel_all_orders",
+    "description": "Cancel all pending orders for a category or specific symbol. Use with caution as this cancels ALL open orders matching the criteria.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category to cancel orders in",
+          "enum": [
+            "linear",
+            "spot",
+            "option",
+            "inverse"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Specific trading pair to cancel orders for. Leave empty to cancel ALL orders in the category",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT"
+          ]
+        },
+        "baseCoin": {
+          "type": "string",
+          "description": "Base coin filter for options and derivatives. Examples: 'BTC', 'ETH'",
+          "examples": [
+            "BTC",
+            "ETH",
+            "SOL"
+          ]
+        },
+        "settleCoin": {
+          "type": "string",
+          "description": "Settlement coin filter. Examples: 'USDT', 'BTC', 'ETH'",
+          "examples": [
+            "USDT",
+            "BTC",
+            "ETH"
+          ]
+        },
+        "orderFilter": {
+          "type": "string",
+          "description": "Order type filter: 'Order' for normal orders, 'StopOrder' for conditional orders",
+          "enum": [
+            "Order",
+            "StopOrder"
+          ]
+        }
+      },
+      "required": [
+        "category"
+      ]
+    }
+  },
+  {
+    "name": "batch_place_order",
+    "description": "Place multiple orders in a single request. More efficient than placing orders individually. All orders must be in the same category.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category for all orders in the batch",
+          "enum": [
+            "linear",
+            "spot",
+            "option",
+            "inverse"
+          ]
+        },
+        "request": {
+          "type": "array",
+          "description": "Array of order objects to place. Maximum 20 orders per batch",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "properties": {
+              "symbol": {
+                "type": "string",
+                "description": "Trading pair symbol",
+                "examples": [
+                  "BTCUSDT",
+                  "ETHUSDT"
+                ]
+              },
+              "side": {
+                "type": "string",
+                "description": "Order side",
+                "enum": [
+                  "Buy",
+                  "Sell"
+                ]
+              },
+              "orderType": {
+                "type": "string",
+                "description": "Order type",
+                "enum": [
+                  "Market",
+                  "Limit"
+                ]
+              },
+              "qty": {
+                "type": "string",
+                "description": "Order quantity",
+                "examples": [
+                  "0.001",
+                  "100"
+                ]
+              },
+              "price": {
+                "type": "string",
+                "description": "Order price (required for Limit orders)",
+                "examples": [
+                  "50000",
+                  "3000.5"
+                ]
+              },
+              "orderLinkId": {
+                "type": "string",
+                "description": "Custom order ID for tracking",
+                "examples": [
+                  "batch_order_1",
+                  "trade_001"
+                ]
+              }
+            },
+            "required": [
+              "symbol",
+              "side",
+              "orderType",
+              "qty"
+            ]
+          }
+        }
+      },
+      "required": [
+        "category",
+        "request"
+      ]
+    }
+  },
+  {
+    "name": "batch_amend_order",
+    "description": "Modify multiple existing orders in a single request. More efficient than amending orders individually. All orders must be in the same category.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category for all orders in the batch",
+          "enum": [
+            "linear",
+            "spot",
+            "option",
+            "inverse"
+          ]
+        },
+        "request": {
+          "type": "array",
+          "description": "Array of order amendment objects. Maximum 20 orders per batch",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "properties": {
+              "symbol": {
+                "type": "string",
+                "description": "Trading pair symbol",
+                "examples": [
+                  "BTCUSDT",
+                  "ETHUSDT"
+                ]
+              },
+              "orderId": {
+                "type": "string",
+                "description": "Bybit's order ID (use either orderId or orderLinkId)",
+                "examples": [
+                  "1234567890123456"
+                ]
+              },
+              "orderLinkId": {
+                "type": "string",
+                "description": "Your custom order ID (use either orderId or orderLinkId)",
+                "examples": [
+                  "myorder123",
+                  "trade_001"
+                ]
+              },
+              "qty": {
+                "type": "string",
+                "description": "New order quantity (optional)",
+                "examples": [
+                  "0.002",
+                  "150"
+                ]
+              },
+              "price": {
+                "type": "string",
+                "description": "New order price (optional)",
+                "examples": [
+                  "51000",
+                  "3100.5"
+                ]
+              }
+            },
+            "required": [
+              "symbol"
+            ]
+          }
+        }
+      },
+      "required": [
+        "category",
+        "request"
+      ]
+    }
+  },
+  {
+    "name": "batch_cancel_order",
+    "description": "Cancel multiple existing orders in a single request. More efficient than canceling orders individually. All orders must be in the same category.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category for all orders in the batch",
+          "enum": [
+            "linear",
+            "spot",
+            "option",
+            "inverse"
+          ]
+        },
+        "request": {
+          "type": "array",
+          "description": "Array of order cancellation objects. Maximum 20 orders per batch",
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "properties": {
+              "symbol": {
+                "type": "string",
+                "description": "Trading pair symbol for the order to cancel",
+                "examples": [
+                  "BTCUSDT",
+                  "ETHUSDT",
+                  "SOLUSDT"
+                ]
+              },
+              "orderId": {
+                "type": "string",
+                "description": "Bybit's order ID (use either orderId or orderLinkId)",
+                "examples": [
+                  "1234567890123456",
+                  "9876543210987654"
+                ]
+              },
+              "orderLinkId": {
+                "type": "string",
+                "description": "Your custom order ID (use either orderId or orderLinkId)",
+                "examples": [
+                  "myorder123",
+                  "trade_2024_001",
+                  "bot_order_456"
+                ]
+              }
+            },
+            "required": [
+              "symbol"
+            ]
+          }
+        }
+      },
+      "required": [
+        "category",
+        "request"
+      ]
+    }
+  },
+  {
+    "name": "place_trigger_order",
+    "description": "Place a conditional/trigger order that executes only when market price reaches your trigger condition. \u26a0\ufe0f EXECUTES REAL TRADES WITH REAL MONEY when triggered. These orders wait for a specific price level before becoming active. The order doesn't occupy margin until triggered. Perfect for stop-loss, take-profit, and breakout strategies.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category: 'linear' for USDT perpetuals, 'spot' for spot trading, 'inverse' for coin-margined futures. Options not supported for trigger orders",
+          "enum": [
+            "linear",
+            "spot",
+            "inverse"
+          ]
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Trading pair symbol. Examples: 'BTCUSDT', 'ETHUSDT', 'SOLUSDT'",
+          "examples": [
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT",
+            "ADAUSDT"
+          ]
+        },
+        "side": {
+          "type": "string",
+          "description": "Order side: 'Buy' to purchase when triggered, 'Sell' to sell when triggered",
+          "enum": [
+            "Buy",
+            "Sell"
+          ]
+        },
+        "orderType": {
+          "type": "string",
+          "description": "Order type after trigger: 'Market' executes at market price when triggered, 'Limit' waits for your limit price after trigger",
+          "enum": [
+            "Market",
+            "Limit"
+          ]
+        },
+        "qty": {
+          "type": "string",
+          "description": "Order quantity when triggered. For spot: coin amount (e.g., '0.001' BTC). For derivatives: contract size (e.g., '100' USDT)",
+          "examples": [
+            "0.001",
+            "100",
+            "1.5",
+            "0.1"
+          ]
+        },
+        "triggerPrice": {
+          "type": "string",
+          "description": "Price that triggers the conditional order. When market hits this price, your order becomes active. Examples: '52000', '2900'",
+          "examples": [
+            "52000",
+            "2900",
+            "0.002",
+            "105.50"
+          ]
+        },
+        "triggerDirection": {
+          "type": "integer",
+          "description": "Trigger direction: 1 = triggered when price RISES to triggerPrice (for buy-stop/sell-limit breakouts), 2 = triggered when price FALLS to triggerPrice (for stop-loss/buy-limit dips)"
+        },
+        "triggerBy": {
+          "type": "string",
+          "description": "Price type for trigger: 'LastPrice' = last traded price (default), 'MarkPrice' = mark price (recommended for derivatives), 'IndexPrice' = index price",
+          "enum": [
+            "LastPrice",
+            "MarkPrice",
+            "IndexPrice"
+          ],
+          "default": "LastPrice"
+        },
+        "price": {
+          "type": "string",
+          "description": "Order price after trigger (for Limit orders only). Leave empty for Market orders. Examples: '52500', '2950'",
+          "examples": [
+            "52500",
+            "2950",
+            "0.0021",
+            "106.25"
+          ]
+        },
+        "orderFilter": {
+          "type": "string",
+          "description": "Order filter for spot: 'Order' = normal conditional order, 'StopOrder' = stop order (assets not reserved until trigger), 'tpslOrder' = TP/SL order (assets reserved)",
+          "enum": [
+            "Order",
+            "StopOrder",
+            "tpslOrder"
+          ],
+          "default": "StopOrder"
+        },
+        "timeInForce": {
+          "type": "string",
+          "description": "Time in force after trigger: 'GTC' = Good Till Cancelled, 'IOC' = Immediate or Cancel, 'FOK' = Fill or Kill, 'PostOnly' = Post Only",
+          "enum": [
+            "GTC",
+            "IOC",
+            "FOK",
+            "PostOnly"
+          ],
+          "default": "GTC"
+        },
+        "reduceOnly": {
+          "type": "boolean",
+          "description": "Reduce only flag: true = can only reduce position size (for closing positions), false = can increase position. Use true for stop-loss orders"
+        },
+        "closeOnTrigger": {
+          "type": "boolean",
+          "description": "Close on trigger: true = ensures order executes even with insufficient margin by canceling other orders if needed. Useful for guaranteed stop-losses"
+        },
+        "positionIdx": {
+          "type": "integer",
+          "description": "Position index for hedge mode: 0 = one-way mode, 1 = hedge-mode Buy side, 2 = hedge-mode Sell side"
+        },
+        "orderLinkId": {
+          "type": "string",
+          "description": "Custom order ID for tracking. Must be unique. Use for order management and identification",
+          "examples": [
+            "trigger_stop_123",
+            "breakout_order_001",
+            "sl_order_456"
+          ]
+        }
+      },
+      "required": [
+        "category",
+        "symbol",
+        "side",
+        "orderType",
+        "qty",
+        "triggerPrice",
+        "triggerDirection"
+      ]
+    }
+  }
+]
